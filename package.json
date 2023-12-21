@@ -1,0 +1,15 @@
+{
+  "name": "rss-feeds",
+  "version": "1.0.0",
+  "description": "RSS Feeds Notifications",
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "serverless-dotenv-plugin": "^6.0.0",
+    "serverless-python-requirements": "^6.0.1"
+  },
+  "scripts": {
+    "deploy": "serverless deploy"
+  },
+  "author": "",
+  "license": "ISC"
+}

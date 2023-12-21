@@ -1,0 +1,17 @@
+Parameters:
+  TopicName:
+    Type: String
+    Default: rss-feeds-topic
+    Description: Name for the SNS topic
+
+Resources:
+  SNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Ref TopicName
+
+Outputs:
+  ExportedTopic:
+    Value: !Ref SNSTopic
+    Export:
+      Name: ExportedTopic
