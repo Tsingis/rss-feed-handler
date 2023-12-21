@@ -1,0 +1,49 @@
+Resources:
+  LambdaFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: RSSFeedLambdaFunctionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+
+  LambdaFunctionS3Policy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: LambdaFunctionS3Policy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+            Resource: !Sub
+              - arn:aws:s3:::${bucket}/*
+              - bucket: !ImportValue ExportedBucket
+          - Effect: Allow
+            Action:
+              - s3:ListBucket
+            Resource: !Sub
+              - arn:aws:s3:::${bucket}
+              - bucket: !ImportValue ExportedBucket
+      Roles:
+        - !Ref LambdaFunctionRole
+
+  LambdaFunctionSNSTopicPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: LambdaFunctionSNSTopicPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - sns:Publish
+            Resource: !ImportValue ExportedTopic
+      Roles:
+        - !Ref LambdaFunctionRole

@@ -1,0 +1,23 @@
+Parameters:
+  BucketName:
+    Type: String
+    Description: Name for the S3 bucket
+
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      VersioningConfiguration:
+        Status: Suspended
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+Outputs:
+  ExportedBucket:
+    Value: !Ref Bucket
+    Export:
+      Name: ExportedBucket

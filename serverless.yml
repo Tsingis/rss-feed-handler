@@ -1,0 +1,46 @@
+service: rss-feeds
+
+useDotenv: true
+
+provider:
+  name: aws
+  stage: ${opt:stage, "live"}
+  runtime: python3.12
+  runtimeManagement: auto
+  architecture: x86_64
+  region: ${opt:region, "eu-north-1"}
+  memorySize: 256
+  timeout: 15
+  logRetentionInDays: 90
+  environment:
+    RSS_FEED_URL: ${env:RSS_FEED_URL}
+    BUCKET_NAME: ${env:BUCKET_NAME}
+    SNS_TOPIC_ARN: ${env:SNS_TOPIC_ARN}
+
+functions:
+  handler:
+    handler: handler.handler
+    role: !Sub arn:aws:iam::${AWS::AccountId}:role/RSSFeedLambdaFunctionRole
+    events:
+      - schedule: cron(0 7 * * ? *)
+
+plugins:
+  - serverless-python-requirements
+  - serverless-dotenv-plugin
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    fileName: requirements.txt
+
+package:
+  patterns:
+    - "!node_modules/**"
+    - "!.github/**"
+    - "!.vscode"
+    - "!cloudformation"
+    - "!.env*"
+    - "!requirements.txt"
+    - "!package.json"
+    - "!package-lock.json"
+    - "!README.md"
