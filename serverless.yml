@@ -13,7 +13,7 @@ provider:
   timeout: 15
   logRetentionInDays: 90
   environment:
-    RSS_FEED_URL: ${env:RSS_FEED_URL}
+    RSS_FEED_URLS: ${env:RSS_FEED_URLS}
     BUCKET_NAME: ${env:BUCKET_NAME}
     SNS_TOPIC_ARN: ${env:SNS_TOPIC_ARN}
 

@@ -4,13 +4,13 @@ import feedparser
 import json
 import logging
 from typing import List
+from urllib.parse import urlparse
 
-RSS_FEED_URL = os.environ["RSS_FEED_URL"]
+RSS_FEED_URLS = os.environ["RSS_FEED_URLS"]
 BUCKET_NAME = os.environ["BUCKET_NAME"]
 SNS_TOPIC_ARN = os.environ["SNS_TOPIC_ARN"]
 
 NOTIFICATION_SUBJECT = "New RSS Feed Entries"
-OBJECT_KEY = "entries.json"
 
 s3 = boto3.client("s3")
 sns = boto3.client("sns")
@@ -30,24 +30,27 @@ def handler(event: dict, context: dict):
 
 def process_feed() -> str:
     try:
-        logger.info("Processing feed")
-        feed = feedparser.parse(RSS_FEED_URL)
-        current_entries: List[dict] = feed.entries
-        old_entries = get_old_entries()
-        old_entry_ids = [entry["id"] for entry in old_entries]
-        new_entries = [
-            create_text(entry)
-            for entry in current_entries
-            if entry["id"] not in old_entry_ids
-        ]
-        message = "\n".join(new_entries)
-        if not message or message is None:
-            logger.info("No notification")
-        else:
-            send_notification(message)
-        update_old_entries(current_entries)
+        feeds = [url for url in RSS_FEED_URLS.split(";")]
+        for feed in feeds:
+            logger.info(f"Processing feed {feed}")
+            feed_file_key = create_feed_file_key(feed)
+            feed = feedparser.parse(feed)
+            current_entries: List[dict] = feed.entries
+            old_entries = get_old_entries(feed_file_key)
+            old_entry_ids = [entry["id"] for entry in old_entries]
+            new_entries = [
+                create_text(entry)
+                for entry in current_entries
+                if entry["id"] not in old_entry_ids
+            ]
+            message = "\n".join(new_entries)
+            if not message or message is None:
+                logger.info("No notification")
+            else:
+                send_notification(message)
+            update_old_entries(current_entries, feed_file_key)
     except Exception:
-        logger.exception("Error processing feed")
+        logger.exception(f"Error processing feed {feed}")
 
 
 def send_notification(message: str):
@@ -68,24 +71,29 @@ def create_text(entry: dict) -> str:
     return f"Title: {title}\nLink: {link}\n"
 
 
-def get_old_entries() -> List[dict]:
+def create_feed_file_key(url: str) -> str:
+    domain = urlparse(url).netloc
+    return f"""{domain.replace(".", "")}.json"""
+
+
+def get_old_entries(key: str) -> List[dict]:
     try:
-        logger.info(f"Getting object {OBJECT_KEY}")
-        response = s3.get_object(Bucket=BUCKET_NAME, Key=OBJECT_KEY)
+        logger.info(f"Getting object {key}")
+        response = s3.get_object(Bucket=BUCKET_NAME, Key=key)
         data = json.loads(response["Body"].read().decode("utf-8"))
         return data.get("entries", [])
     except s3.exceptions.NoSuchKey:
-        logger.exception(f"Key {OBJECT_KEY} not found")
+        logger.exception(f"Key {key} not found")
         return list()
     except Exception:
-        logger.exception(f"Error getting object {OBJECT_KEY}")
+        logger.exception(f"Error getting object {key}")
         return list()
 
 
-def update_old_entries(entries: List[dict]):
+def update_old_entries(entries: List[dict], key: str):
     try:
-        logger.info(f"Updating object {OBJECT_KEY}")
+        logger.info(f"Updating object {key}")
         data = json.dumps({"entries": entries})
-        s3.put_object(Bucket=BUCKET_NAME, Key=OBJECT_KEY, Body=data)
+        s3.put_object(Bucket=BUCKET_NAME, Key=key, Body=data)
     except Exception:
-        logger.exception(f"Error updating object {OBJECT_KEY}")
+        logger.exception(f"Error updating object {key}")
