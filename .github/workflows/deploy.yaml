@@ -27,6 +27,6 @@ jobs:
       - name: Deploy
         run: npm run-script deploy
         env:
-          RSS_FEED_URL: ${{ secrets.RSS_FEED_URL }}
+          RSS_FEED_URLS: ${{ secrets.RSS_FEED_URLS }}
           BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
           SNS_TOPIC_ARN: ${{ secrets.SNS_TOPIC_ARN }}
