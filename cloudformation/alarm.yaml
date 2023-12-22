@@ -58,7 +58,7 @@ Resources:
               - !Ref AWS::Region
               - !Ref AWS::AccountId
               - !Ref SNSTopicName
-      AlarmDescription: Telegram bot email notifications for any errors on handler
+      AlarmDescription: RSS feed email notifications for any errors on handler
       AlarmName: !Ref AlarmName
       ComparisonOperator: GreaterThanThreshold
       DatapointsToAlarm: 1
