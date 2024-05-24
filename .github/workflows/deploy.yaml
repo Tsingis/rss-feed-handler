@@ -3,6 +3,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - "**"
+      - "!README.md"
+      - "!.gitignore"
+      - "!cloudformation/**"
+      - "!.github/**"
+      - ".github/workflows/deploy.yaml"
   workflow_dispatch:
 jobs:
   deploy:
