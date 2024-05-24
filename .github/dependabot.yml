@@ -4,7 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
+      day: "sunday"
       time: "21:00"
       timezone: "Europe/Helsinki"
     target-branch: "master"
@@ -13,7 +13,7 @@ updates:
     versioning-strategy: "increase"
     schedule:
       interval: "weekly"
-      day: "monday"
+      day: "sunday"
       time: "21:00"
       timezone: "Europe/Helsinki"
     target-branch: "master"
@@ -22,7 +22,7 @@ updates:
     versioning-strategy: "increase"
     schedule:
       interval: "weekly"
-      day: "monday"
+      day: "sunday"
       time: "21:00"
       timezone: "Europe/Helsinki"
     target-branch: "master"
