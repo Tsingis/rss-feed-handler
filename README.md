@@ -17,4 +17,4 @@
 1. Set environment variables
 2. Start Docker Desktop
 3. Run `npm install`
-4. Run `serverless deploy --aws-profile <PROFILE>`
+4. Run `npm run deploy -- --aws-profile <PROFILE>`
