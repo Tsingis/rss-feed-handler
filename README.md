@@ -7,14 +7,14 @@
 ## Requirements:
 
 - AWS Account
+- Serverless Framework and Account
 - Python 3.12
 - Node.js 20
-- Serverless Framework
-- Docker Desktop
+- Docker
 
 ## Manual deployment
 
-1. Set environment variables
-2. Start Docker Desktop
+1. Set environment variables `.env` file
+2. Start Docker
 3. Run `npm install`
-4. Run `npm run deploy -- --aws-profile <PROFILE>`
+4. Run `npm run deploy`

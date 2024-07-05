@@ -1,6 +1,6 @@
+org: tsingis
+app: rss-feeds
 service: rss-feeds
-
-useDotenv: true
 
 provider:
   name: aws
@@ -21,13 +21,12 @@ provider:
 functions:
   handler:
     handler: handler.handler
-    role: !Sub arn:aws:iam::${AWS::AccountId}:role/RSSFeedLambdaFunctionRole
+    role: arn:aws:iam::${aws:accountId}:role/RSSFeedLambdaFunctionRole
     events:
       - schedule: cron(0 5 * * ? *)
 
 plugins:
   - serverless-python-requirements
-  - serverless-dotenv-plugin
 
 custom:
   pythonRequirements:
