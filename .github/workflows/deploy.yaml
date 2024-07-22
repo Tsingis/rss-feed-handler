@@ -4,11 +4,10 @@ on:
     branches:
       - master
     paths:
-      - "**"
-      - "!README.md"
-      - "!.gitignore"
-      - "!cloudformation/**"
-      - "!.github/**"
+      - "handler.py"
+      - "requirements.txt"
+      - "package*.json"
+      - "serverless.yml"
       - ".github/workflows/deploy.yaml"
   workflow_dispatch:
 jobs:
