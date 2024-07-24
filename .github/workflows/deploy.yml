@@ -8,7 +8,7 @@ on:
       - "requirements.txt"
       - "package*.json"
       - "serverless.yml"
-      - ".github/workflows/deploy.yaml"
+      - ".github/workflows/deploy.yml"
   workflow_dispatch:
 jobs:
   deploy:
