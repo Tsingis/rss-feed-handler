@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "RSS Feeds Notifications",
   "devDependencies": {
-    "serverless": "^4.1.15",
+    "serverless": "^4.1.17",
     "serverless-python-requirements": "^6.1.0"
   },
   "scripts": {
