@@ -35,12 +35,5 @@ custom:
 
 package:
   patterns:
-    - "!node_modules/**"
-    - "!.github/**"
-    - "!.vscode"
-    - "!cloudformation"
-    - "!.env*"
-    - "!requirements.txt"
-    - "!package.json"
-    - "!package-lock.json"
-    - "!README.md"
+    - "!**"
+    - "handler.py"

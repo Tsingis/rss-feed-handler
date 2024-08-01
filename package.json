@@ -2,13 +2,12 @@
   "name": "rss-feeds",
   "version": "1.0.0",
   "description": "RSS Feeds Notifications",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "package": "serverless package"
+  },
   "devDependencies": {
     "serverless": "^4.1.17",
     "serverless-python-requirements": "^6.1.0"
-  },
-  "scripts": {
-    "deploy": "serverless deploy"
-  },
-  "author": "",
-  "license": "ISC"
+  }
 }
