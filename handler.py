@@ -44,7 +44,7 @@ def process_feed() -> str:
                 if entry["id"] not in old_entry_ids
             ]
             message = "\n".join(new_entries)
-            if not message or message is None:
+            if not message:
                 logger.info("No notification")
             else:
                 send_notification(message)
