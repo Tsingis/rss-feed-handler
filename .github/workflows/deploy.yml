@@ -9,6 +9,15 @@ on:
       - "package*.json"
       - "serverless.yml"
       - ".github/workflows/deploy.yml"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "handler.py"
+      - "requirements.txt"
+      - "package*.json"
+      - "serverless.yml"
+      - ".github/workflows/deploy.yml"
   workflow_dispatch:
 jobs:
   deploy:
@@ -16,6 +25,11 @@ jobs:
     strategy:
       matrix:
         node-version: ["22"]
+    env:
+      SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+      RSS_FEED_URLS: ${{ secrets.RSS_FEED_URLS }}
+      BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+      SNS_TOPIC_ARN: ${{ secrets.SNS_TOPIC_ARN }}
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
@@ -23,12 +37,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        # Force due Serverless v4 clash with the plugins
-        run: npm ci -f
+        run: npm ci
+      - name: Package
+        run: npm run package
       - name: Deploy
-        run: npm run deploy
-        env:
-          SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
-          RSS_FEED_URLS: ${{ secrets.RSS_FEED_URLS }}
-          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
-          SNS_TOPIC_ARN: ${{ secrets.SNS_TOPIC_ARN }}
+        if: github.event_name == 'push'
+        run: npm run deploy -- --package .serverless
