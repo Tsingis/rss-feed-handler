@@ -1,0 +1,45 @@
+name: lambda
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "handler.py"
+      - "requirements.txt"
+      - "package*.json"
+      - "serverless.yml"
+      - ".github/workflows/lambda.yml"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "handler.py"
+      - "requirements.txt"
+      - "package*.json"
+      - "serverless.yml"
+      - ".github/workflows/lambda.yml"
+  workflow_dispatch:
+jobs:
+  lambda:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["22"]
+    env:
+      SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+      RSS_FEED_URLS: ${{ secrets.RSS_FEED_URLS }}
+      BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+      SNS_TOPIC_ARN: ${{ secrets.SNS_TOPIC_ARN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Package
+        run: npm run package
+      - name: Deploy
+        if: github.event_name == 'push'
+        run: npm run deploy -- --package .serverless
