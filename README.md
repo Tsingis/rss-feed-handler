@@ -6,12 +6,12 @@
 
 - Scheduled new entries via subscription on daily basis providing title and link
 
-## Requirements:
+## Tools
 
 - AWS Account
 - Serverless Framework and Account
 - Python 3.12
-- Node.js 20
+- Node.js 22
 - Docker
 
 ## Manual deployment
