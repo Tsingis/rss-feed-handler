@@ -7,7 +7,7 @@
     "package": "serverless package"
   },
   "devDependencies": {
-    "serverless": "^4.4.3",
+    "serverless": "^4.4.4",
     "serverless-python-requirements": "^6.1.1"
   }
 }
