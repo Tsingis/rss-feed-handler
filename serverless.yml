@@ -5,7 +5,7 @@ service: rss-feeds
 provider:
   name: aws
   stage: ${opt:stage, "live"}
-  runtime: python3.12
+  runtime: python3.13
   runtimeManagement: auto
   versionFunctions: false
   architecture: x86_64
