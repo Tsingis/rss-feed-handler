@@ -25,12 +25,8 @@ s3 = boto3.client("s3")
 sns = boto3.client("sns")
 
 logger = logging.getLogger(__name__)
-if logger.handlers:
-    for handler in logger.handlers:
-        logger.removeHandler(handler)
-
-logFormat = "%(asctime)s %(name)s %(levelname)s: %(message)s"
-logging.basicConfig(level=logging.INFO, format=logFormat)
+logFormat = "%(asctime)s %(levelname)s: %(message)s"
+logging.basicConfig(level=logging.INFO, format=logFormat, force=True)
 
 
 def handler(event: dict, context: dict):
