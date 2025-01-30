@@ -1,5 +1,12 @@
 name: codeql
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - "handler.py"
+      - "requirements.txt"
+      - ".github/workflows/codeql.yml"
   schedule:
     - cron: "0 21 * * 0"
   workflow_dispatch:
