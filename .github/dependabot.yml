@@ -12,7 +12,8 @@ updates:
     directory: "/"
     versioning-strategy: "increase"
     schedule:
-      interval: "daily"
+      interval: "monthly"
+      day: "wednesday"
       time: "21:00"
       timezone: "Europe/Helsinki"
     target-branch: "master"
@@ -20,7 +21,8 @@ updates:
     directory: "/"
     versioning-strategy: "increase"
     schedule:
-      interval: "daily"
+      interval: "monthly"
+      day: "wednesday"
       time: "21:00"
       timezone: "Europe/Helsinki"
     target-branch: "master"
