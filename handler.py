@@ -39,7 +39,7 @@ def process_feeds():
         process_feed(feed)
 
 
-def process_feed(feed: str) -> str:
+def process_feed(feed: str):
     try:
         logger.info(f"Processing feed {feed}")
         feed_file_key = create_feed_file_key(feed)
