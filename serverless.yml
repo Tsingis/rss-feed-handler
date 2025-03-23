@@ -22,8 +22,6 @@ functions:
   handler:
     handler: handler.handler
     role: arn:aws:iam::${aws:accountId}:role/RSSFeedLambdaFunctionRole
-    events:
-      - schedule: cron(0 5 * * ? *)
 
 plugins:
   - serverless-python-requirements
@@ -37,3 +35,48 @@ package:
   patterns:
     - "!**"
     - "handler.py"
+
+resources:
+  Resources:
+    SchedulerInvokeRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: RSSFeedSchedulerInvokeRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: scheduler.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: AllowLambdaInvoke
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action: lambda:InvokeFunction
+                  Resource:
+                    Fn::GetAtt:
+                      - HandlerLambdaFunction
+                      - Arn
+    RSSFeedScheduler:
+      Type: AWS::Scheduler::Schedule
+      Properties:
+        Name: RSSFeedScheduler
+        ScheduleExpression: cron(0 7 * * ? *)
+        ScheduleExpressionTimezone: Europe/Helsinki
+        FlexibleTimeWindow:
+          Mode: OFF
+        Target:
+          RetryPolicy:
+            MaximumRetryAttempts: 1
+            MaximumEventAgeInSeconds: 900
+          Arn:
+            Fn::GetAtt:
+              - HandlerLambdaFunction
+              - Arn
+          RoleArn:
+            Fn::GetAtt:
+              - SchedulerInvokeRole
+              - Arn
