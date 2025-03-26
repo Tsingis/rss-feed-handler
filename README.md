@@ -1,6 +1,6 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Tsingis_rss-notification&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Tsingis_rss-notification) [![Deploy Status](https://github.com/tsingis/rss-notification/actions/workflows/lambda.yml/badge.svg)](https://github.com/tsingis/rss-notification/actions/workflows/lambda.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Tsingis_rss-notification&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Tsingis_rss-notification)
 
-# RSS Feed via AWS SNS Topic Subscription
+# RSS Feeds updates via AWS SNS Topic Subscription
 
 ## How it works
 
@@ -9,14 +9,12 @@
 ## Tools
 
 - AWS Account
-- Serverless Framework and Account
 - Python
-- Node.js
-- Docker (locally)
+- Terraform
 
 ## Manual deployment
 
-1. Set environment variables `.env` file
-2. Start Docker
-3. Run `npm install`
-4. Run `npm run deploy`
+1. Set `terraform.tfvars` contents
+2. Run `terraform init`
+3. Run `terraform plan -out=tfplan`
+4. Run `terraform apply tfplan`

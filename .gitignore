@@ -1,5 +1,9 @@
-/node_modules
-/.serverless
 /.vscode
+/package
 *__pycache__
 .env*
+.terraform*
+*.tfstate*
+*.tfvars
+tfplan
+*.zip
