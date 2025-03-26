@@ -1,0 +1,66 @@
+name: terraform
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "handler.py"
+      - "requirements.txt"
+      - "terraform/**"
+      - ".github/workflows/terraform.yml"
+  push:
+    branches:
+      - master
+    paths:
+      - "handler.py"
+      - "requirements.txt"
+      - "terraform/**"
+      - ".github/workflows/terraform.yml"
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  terraform:
+    name: Deploy Terraform
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      TF_VAR_bucket_name: ${{ secrets.BUCKET_NAME }}
+      TF_VAR_topic_name: ${{ secrets.TOPIC_NAME }}
+      TF_VAR_rss_feeds_urls: ${{ secrets.RSS_FEED_URLS }}
+      TF_VAR_lambda_package_path: "../rss-feeds.zip"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          architecture: "x64"
+      - name: Create deployment package
+        run: python create_package.py
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.AWS_REGION || 'eu-north-1' }}
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.11.3
+      - name: Terraform format
+        run: terraform fmt -check
+        continue-on-error: true
+        working-directory: ./terraform
+      - name: Terraform init
+        run: terraform init -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}"
+        working-directory: ./terraform
+      - name: Terraform plan
+        run: terraform plan -out=tfplan
+        working-directory: ./terraform
+      - name: Terraform apply
+        if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch')}}
+        run: terraform apply -auto-approve tfplan
+        working-directory: ./terraform

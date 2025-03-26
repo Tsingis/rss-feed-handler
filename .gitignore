@@ -2,7 +2,7 @@
 /package
 *__pycache__
 .env*
-.terraform*
+.terraform
 *.tfstate*
 *.tfvars
 tfplan
