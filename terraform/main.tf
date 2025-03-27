@@ -17,6 +17,7 @@ provider "aws" {
 
 module "rss_notification" {
   source              = "./modules/rss_notification"
+  aws_region          = "eu-north-1"
   bucket_name         = var.bucket_name
   topic_name          = var.topic_name
   rss_feeds_urls      = var.rss_feeds_urls

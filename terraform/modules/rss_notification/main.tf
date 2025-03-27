@@ -49,6 +49,8 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_policy" "lambda_policy" {
   name = "rss-feeds-lambda-policy"
 
@@ -83,10 +85,18 @@ resource "aws_iam_policy" "lambda_policy" {
         Effect = "Allow"
         Action = [
           "logs:CreateLogGroup",
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/rss-feeds-handler:*"
+        ]
       }
     ]
   })
