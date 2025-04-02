@@ -94,8 +94,8 @@ resource "aws_iam_policy" "lambda_policy" {
         ]
       },
       {
-        Effect = "Allow"
-        Action = "sns:Publish"
+        Effect   = "Allow"
+        Action   = "sns:Publish"
         Resource = aws_sns_topic.rss_topic.arn
       },
       {
@@ -136,9 +136,9 @@ resource "aws_lambda_function" "rss_handler" {
 
   environment {
     variables = {
-      RSS_FEED_URLS = var.rss_feeds_urls
-      BUCKET_NAME   = aws_s3_bucket.rss_feeds_bucket.bucket
-      SNS_TOPIC_ARN = aws_sns_topic.rss_topic.arn
+      RSS_FEEDS_URLS      = var.rss_feeds_urls
+      RSS_FEEDS_BUCKET    = aws_s3_bucket.rss_feeds_bucket.bucket
+      RSS_FEEDS_TOPIC_ARN = aws_sns_topic.rss_topic.arn
     }
   }
 
@@ -175,8 +175,8 @@ resource "aws_iam_policy" "scheduler_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = "lambda:InvokeFunction"
+        Effect   = "Allow"
+        Action   = "lambda:InvokeFunction"
         Resource = aws_lambda_function.rss_handler.arn
       }
     ]
@@ -189,8 +189,8 @@ resource "aws_iam_role_policy_attachment" "scheduler_policy_attachment" {
 }
 
 resource "aws_scheduler_schedule" "rss_schedule" {
-  name                        = "rss-feeds-schedule"
-  schedule_expression         = "cron(0 7 * * ? *)"
+  name                         = "rss-feeds-schedule"
+  schedule_expression          = "cron(0 7 * * ? *)"
   schedule_expression_timezone = "Europe/Helsinki"
 
   flexible_time_window {

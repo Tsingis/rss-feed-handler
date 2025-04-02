@@ -15,9 +15,9 @@ if local:
     load_dotenv()
 
 
-RSS_FEED_URLS = os.environ["RSS_FEED_URLS"]
-BUCKET_NAME = os.environ["BUCKET_NAME"]
-SNS_TOPIC_ARN = os.environ["SNS_TOPIC_ARN"]
+RSS_FEEDS_URLS = os.getenv("RSS_FEEDS_URLS")
+BUCKET = os.getenv("RSS_FEEDS_BUCKET")
+TOPIC_ARN = os.getenv("RSS_FEEDS_TOPIC_ARN")
 
 NOTIFICATION_SUBJECT = "New RSS Feed Entries"
 
@@ -34,21 +34,21 @@ def handler(event: dict, context: dict):
 
 
 def process_feeds():
-    feeds = [url for url in RSS_FEED_URLS.split(";")]
-    for feed in feeds:
-        process_feed(feed)
+    feed_urls = [url for url in RSS_FEEDS_URLS.split(";")]
+    for feed_url in feed_urls:
+        process_feed(feed_url)
 
 
-def process_feed(feed: str):
+def process_feed(feed_url: str):
     try:
-        logger.info(f"Processing feed {feed}")
-        feed_file_key = create_feed_file_key(feed)
-        feed = feedparser.parse(feed)
+        logger.info(f"Processing feed {feed_url}")
+        feed_file_key = create_feed_file_key(feed_url)
+        feed = feedparser.parse(feed_url)
         current_entries: List[dict] = feed.entries
         old_entries = get_old_entries(feed_file_key)
         update_old_entries(current_entries, feed_file_key)
         if not old_entries:
-            logger.info("Feed entries initialized")
+            logger.info(f"Feed {feed_url} entries initialized")
             return
         old_entry_ids = [entry["id"] for entry in old_entries]
         new_entries = [
@@ -63,16 +63,16 @@ def process_feed(feed: str):
             else:
                 send_notification(message)
         else:
-            logger.info("No new entries")
+            logger.info(f"No new entries in feed {feed_url}")
     except Exception:
-        logger.exception(f"Error processing feed {feed}")
+        logger.exception(f"Error processing feed {feed_url}")
 
 
 def send_notification(message: str):
     try:
         logger.info("Publishing notification")
         sns.publish(
-            TopicArn=SNS_TOPIC_ARN,
+            TopicArn=TOPIC_ARN,
             Subject=NOTIFICATION_SUBJECT,
             Message=message,
         )
@@ -94,7 +94,7 @@ def create_feed_file_key(url: str) -> str:
 def get_old_entries(key: str) -> List[dict]:
     try:
         logger.info(f"Getting object {key}")
-        response = s3.get_object(Bucket=BUCKET_NAME, Key=key)
+        response = s3.get_object(Bucket=BUCKET, Key=key)
         data = json.loads(response["Body"].read().decode("utf-8"))
         return data.get("entries", [])
     except s3.exceptions.NoSuchKey:
@@ -108,7 +108,7 @@ def update_old_entries(entries: List[dict], key: str):
     try:
         logger.info(f"Updating object {key}")
         data = json.dumps({"entries": entries})
-        s3.put_object(Bucket=BUCKET_NAME, Key=key, Body=data)
+        s3.put_object(Bucket=BUCKET, Key=key, Body=data)
     except Exception:
         logger.exception(f"Error updating object {key}")
 
