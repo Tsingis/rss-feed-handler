@@ -1,14 +1,14 @@
 output "bucket_name" {
-  value     = module.rss_notification.bucket_name
+  value     = aws_s3_bucket.rss_feeds_bucket.bucket
   sensitive = true
 }
 
 output "sns_topic_arn" {
-  value     = module.rss_notification.sns_topic_arn
+  value     = aws_sns_topic.rss_topic.arn
   sensitive = true
 }
 
 output "lambda_function_arn" {
-  value     = module.rss_notification.lambda_function_arn
+  value     = aws_lambda_function.rss_handler.arn
   sensitive = true
 }
