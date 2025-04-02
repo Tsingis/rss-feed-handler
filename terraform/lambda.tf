@@ -12,7 +12,7 @@ resource "aws_lambda_function" "rss_handler" {
     variables = {
       RSS_FEEDS_URLS      = var.rss_feeds_urls
       RSS_FEEDS_BUCKET    = aws_s3_bucket.rss_feeds_bucket.bucket
-      RSS_FEEDS_TOPIC_ARN = aws_sns_topic.rss_topic.arn
+      RSS_FEEDS_TOPIC_ARN = aws_sns_topic.rss_feeds_topic.arn
     }
   }
 
@@ -72,7 +72,7 @@ resource "aws_iam_policy" "lambda_policy" {
       {
         Effect   = "Allow"
         Action   = "sns:Publish"
-        Resource = aws_sns_topic.rss_topic.arn
+        Resource = aws_sns_topic.rss_feeds_topic.arn
       },
       {
         Effect = "Allow"

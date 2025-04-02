@@ -4,7 +4,7 @@ output "bucket_name" {
 }
 
 output "sns_topic_arn" {
-  value     = aws_sns_topic.rss_topic.arn
+  value     = aws_sns_topic.rss_feeds_topic.arn
   sensitive = true
 }
 
