@@ -39,10 +39,13 @@ def create_zip():
         for root, _, files in os.walk(PACKAGE_DIR):
             if "__pycache__" in root:
                 continue
-            for file in files:
+            for file in sorted(files):
                 file_path = Path(root) / file
                 arcname = file_path.relative_to(PACKAGE_DIR)
-                zipf.write(file_path, arcname)
+                zip_info = zipfile.ZipInfo(str(arcname))
+                zip_info.compress_type = zipfile.ZIP_DEFLATED
+                with open(file_path, "rb") as f:
+                    zipf.writestr(zip_info, f.read())
 
 
 def main():
