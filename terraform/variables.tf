@@ -14,6 +14,11 @@ variable "topic_name" {
   type        = string
 }
 
+variable "alarm_topic_name" {
+  description = "Name of the alarm SNS topic"
+  type        = string
+}
+
 variable "rss_feeds_urls" {
   description = "Semicolon-separated list of RSS feeds URLs"
   type        = string
