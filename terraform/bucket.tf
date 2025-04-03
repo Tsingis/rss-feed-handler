@@ -6,7 +6,24 @@ resource "aws_s3_bucket_versioning" "rss_bucket_versioning" {
   bucket = aws_s3_bucket.rss_feeds_bucket.id
 
   versioning_configuration {
-    status = "Disabled"
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "rss_bucket_lifecycle" {
+  bucket = aws_s3_bucket.rss_feeds_bucket.id
+
+  rule {
+    id     = "delete-old-files"
+    status = "Enabled"
+
+    filter {
+      prefix = ""
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = 7
+    }
   }
 }
 
