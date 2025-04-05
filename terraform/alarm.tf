@@ -17,7 +17,7 @@ resource "aws_cloudwatch_metric_alarm" "rss_feeds_logs_alarm" {
   evaluation_periods  = 1
   datapoints_to_alarm = 1
   threshold           = 0
-  period              = 10
+  period              = 60
   statistic           = "SampleCount"
   treat_missing_data  = "missing"
 
