@@ -2,20 +2,18 @@ import os
 import shutil
 import subprocess
 import zipfile
+import argparse
 from pathlib import Path
 
 BASE_DIR = Path(__file__).parent
 PACKAGE_DIR = BASE_DIR / "package"
-ZIP_FILE = BASE_DIR / "rss-feeds.zip"
-REQUIREMENTS_FILE = BASE_DIR / "requirements.txt"
-HANDLER_FILE = BASE_DIR / "handler.py"
 
 
-def set_up():
+def set_up(zip_file: Path):
     if PACKAGE_DIR.exists():
         shutil.rmtree(PACKAGE_DIR)
-    if ZIP_FILE.exists():
-        ZIP_FILE.unlink()
+    if zip_file.exists():
+        zip_file.unlink()
     PACKAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -24,18 +22,18 @@ def clean_up():
         shutil.rmtree(PACKAGE_DIR)
 
 
-def install_dependencies():
+def install_dependencies(requirements_file: Path):
     subprocess.check_call(
-        ["pip", "install", "-r", str(REQUIREMENTS_FILE), "--target", str(PACKAGE_DIR)]
+        ["pip", "install", "-r", str(requirements_file), "--target", str(PACKAGE_DIR)]
     )
 
 
-def copy_handler():
-    shutil.copy(HANDLER_FILE, PACKAGE_DIR)
+def copy_handler(handler_file: Path):
+    shutil.copy(handler_file, PACKAGE_DIR)
 
 
-def create_zip():
-    with zipfile.ZipFile(ZIP_FILE, "w", zipfile.ZIP_DEFLATED) as zipf:
+def create_zip(zip_file: Path):
+    with zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED) as zipf:
         for root, _, files in os.walk(PACKAGE_DIR):
             if "__pycache__" in root:
                 continue
@@ -49,13 +47,40 @@ def create_zip():
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Build a Lambda deployment package.")
+    parser.add_argument(
+        "--output",
+        "-o",
+        type=str,
+        default="rss-feeds.zip",
+        help="Output zip file name (default: rss-feeds.zip)",
+    )
+    parser.add_argument(
+        "--requirements",
+        "-r",
+        type=str,
+        default="requirements.txt",
+        help="Path to requirements.txt (default: requirements.txt)",
+    )
+    parser.add_argument(
+        "--handler",
+        type=str,
+        default="handler.py",
+        help="Path to handler.py (default: handler.py)",
+    )
+    args = parser.parse_args()
+
+    zip_file = BASE_DIR / args.output
+    requirements_file = BASE_DIR / args.requirements
+    handler_file = BASE_DIR / args.handler
+
     print("Building deployment package...")
-    set_up()
-    install_dependencies()
-    copy_handler()
-    create_zip()
+    set_up(zip_file)
+    install_dependencies(requirements_file)
+    copy_handler(handler_file)
+    create_zip(zip_file)
     clean_up()
-    print(f"Deployment package created {ZIP_FILE}")
+    print(f"Deployment package created: {zip_file}")
 
 
 if __name__ == "__main__":
