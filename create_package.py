@@ -24,7 +24,16 @@ def clean_up():
 
 def install_dependencies(requirements_file: Path):
     subprocess.check_call(
-        ["pip", "install", "-r", str(requirements_file), "--target", str(PACKAGE_DIR)]
+        [
+            "pip",
+            "install",
+            "--disable-pip-version-check",
+            "--prefer-binary",
+            "-r",
+            str(requirements_file),
+            "--target",
+            str(PACKAGE_DIR),
+        ]
     )
 
 

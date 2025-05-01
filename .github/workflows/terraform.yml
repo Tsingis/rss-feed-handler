@@ -5,6 +5,7 @@ on:
       - master
     paths:
       - "handler.py"
+      - "create_package.py"
       - "requirements.txt"
       - "terraform/**"
       - ".github/workflows/terraform.yml"
@@ -13,6 +14,7 @@ on:
       - master
     paths:
       - "handler.py"
+      - "create_package.py"
       - "requirements.txt"
       - "terraform/**"
   workflow_dispatch:
