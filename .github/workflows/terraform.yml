@@ -29,11 +29,12 @@ jobs:
       id-token: write
       contents: read
     env:
+      lambda_package: ${{ vars.LAMBDA_PACKAGE}}
       TF_VAR_bucket_name: ${{ secrets.RSS_FEEDS_BUCKET }}
       TF_VAR_topic_name: ${{ secrets.RSS_FEEDS_TOPIC }}
       TF_VAR_alarm_topic_name: ${{ secrets.RSS_FEEDS_ALARM_TOPIC }}
-      TF_VAR_rss_feeds_urls: ${{ secrets.RSS_FEEDS_URLS }}
-      TF_VAR_lambda_package_path: "../rss-feeds.zip"
+      TF_VAR_rss_feeds_urls: ${{ vars.RSS_FEEDS_URLS }}
+      TF_VAR_lambda_package_path: ${{ github.workspace}}/${{ vars.LAMBDA_PACKAGE }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -42,16 +43,16 @@ jobs:
           python-version: "3.13"
           architecture: "x64"
       - name: Create deployment package
-        run: python create_package.py
+        run: python create_package.py --output ${{ vars.LAMBDA_PACKAGE }}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: ${{ secrets.AWS_REGION || 'eu-north-1' }}
+          aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_ROLE }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.11.4
+          terraform_version: ${{ vars.TF_VERSION }}
       - name: Terraform format
         run: terraform fmt -check
         working-directory: ./terraform
