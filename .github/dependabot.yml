@@ -17,3 +17,11 @@ updates:
       time: "21:00"
       timezone: "Europe/Helsinki"
     target-branch: "master"
+  - package-ecosystem: "terraform"
+    directory: "/terraform"
+    schedule:
+      interval: "monthly"
+      day: "wednesday"
+      time: "21:00"
+      timezone: "Europe/Helsinki"
+    target-branch: "master"
