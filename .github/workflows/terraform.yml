@@ -51,8 +51,6 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ vars.TF_VERSION }}
       - name: Terraform format
         run: terraform fmt -check
         working-directory: ./terraform
