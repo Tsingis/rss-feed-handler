@@ -34,7 +34,7 @@ def handler(event: dict, context: dict):
 
 
 def process_feeds():
-    feed_urls = [url for url in RSS_FEEDS_URLS.split(";")]
+    feed_urls = RSS_FEEDS_URLS.split(";")
     for feed_url in feed_urls:
         process_feed(feed_url)
 
