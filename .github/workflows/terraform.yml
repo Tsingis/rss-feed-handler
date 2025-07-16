@@ -6,7 +6,7 @@ on:
     paths:
       - "handler.py"
       - "create_package.py"
-      - "requirements.txt"
+      - "Pipfile*"
       - "terraform/**"
       - ".github/workflows/terraform.yml"
   push:
@@ -15,7 +15,7 @@ on:
     paths:
       - "handler.py"
       - "create_package.py"
-      - "requirements.txt"
+      - "Pipfile*"
       - "terraform/**"
   workflow_dispatch:
 concurrency:
@@ -42,6 +42,13 @@ jobs:
         with:
           python-version: "3.13"
           architecture: "x64"
+          cache: "pipenv"
+          cache-dependency-path: Pipfile.lock
+      - name: Install pipenv & create dependencies
+        run: |
+          pip install --prefer-binary pipenv
+          pipenv install
+          pipenv requirements > requirements.txt
       - name: Create deployment package
         run: python create_package.py --output ${{ vars.LAMBDA_PACKAGE }}
       - name: Configure AWS Credentials
