@@ -4,8 +4,8 @@ on:
     branches:
       - master
     paths:
-      - "handler.py"
-      - "requirements.txt"
+      - "*.py"
+      - "Pipfile*"
       - ".github/workflows/codeql.yml"
   schedule:
     - cron: "0 21 * * 0"
