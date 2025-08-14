@@ -37,7 +37,7 @@ jobs:
       TF_VAR_lambda_package_path: ${{ github.workspace}}/${{ vars.LAMBDA_PACKAGE }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
