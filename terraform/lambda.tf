@@ -13,6 +13,7 @@ resource "aws_lambda_function" "rss_handler" {
       RSS_FEEDS_URLS      = var.rss_feeds_urls
       RSS_FEEDS_BUCKET    = aws_s3_bucket.rss_feeds_bucket.bucket
       RSS_FEEDS_TOPIC_ARN = aws_sns_topic.rss_feeds_topic.arn
+      AWS_ACCOUNT_ID      = data.aws_caller_identity.current.account_id
     }
   }
 

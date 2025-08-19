@@ -18,6 +18,7 @@ if local:
 RSS_FEEDS_URLS = os.getenv("RSS_FEEDS_URLS")
 BUCKET = os.getenv("RSS_FEEDS_BUCKET")
 TOPIC_ARN = os.getenv("RSS_FEEDS_TOPIC_ARN")
+ACCOUNT_ID = os.getenv("AWS_ACCOUNT_ID")
 
 NOTIFICATION_SUBJECT = "New RSS Feed Entries"
 
@@ -94,7 +95,7 @@ def create_feed_file_key(url: str) -> str:
 def get_old_entries(key: str) -> List[dict]:
     try:
         logger.info(f"Getting object {key}")
-        response = s3.get_object(Bucket=BUCKET, Key=key)
+        response = s3.get_object(Bucket=BUCKET, Key=key, ExpectedBucketOwner=ACCOUNT_ID)
         data = json.loads(response["Body"].read().decode("utf-8"))
         return data.get("entries", [])
     except s3.exceptions.NoSuchKey:
@@ -108,7 +109,7 @@ def update_old_entries(entries: List[dict], key: str):
     try:
         logger.info(f"Updating object {key}")
         data = json.dumps({"entries": entries})
-        s3.put_object(Bucket=BUCKET, Key=key, Body=data)
+        s3.put_object(Bucket=BUCKET, Key=key, Body=data, ExpectedBucketOwner=ACCOUNT_ID)
     except Exception:
         logger.exception(f"Error updating object {key}")
 
