@@ -7,14 +7,7 @@ from typing import List
 from urllib.parse import urlparse
 
 
-local = os.getenv("AWS_LAMBDA_FUNCTION_NAME") is None
-
-if local:
-    from dotenv import load_dotenv
-
-    load_dotenv()
-
-
+LOCAL = os.getenv("AWS_LAMBDA_FUNCTION_NAME") is None
 RSS_FEEDS_URLS = os.getenv("RSS_FEEDS_URLS")
 BUCKET = os.getenv("RSS_FEEDS_BUCKET")
 TOPIC_ARN = os.getenv("RSS_FEEDS_TOPIC_ARN")
@@ -53,13 +46,11 @@ def process_feed(feed_url: str):
             return
         old_entry_ids = [entry["id"] for entry in old_entries]
         new_entries = [
-            create_text(entry)
-            for entry in current_entries
-            if entry["id"] not in old_entry_ids
+            create_text(entry) for entry in current_entries if entry["id"] not in old_entry_ids
         ]
         if new_entries:
             message = "\n".join(new_entries)
-            if local:
+            if LOCAL:
                 logger.debug(message)
             else:
                 send_notification(message)
