@@ -7,6 +7,7 @@ on:
       - "handler.py"
       - "create_package.py"
       - "Pipfile*"
+      - "requirements.txt"
       - "terraform/**"
       - ".github/workflows/terraform.yml"
   push:
@@ -46,7 +47,7 @@ jobs:
           cache-dependency-path: Pipfile.lock
       - name: Install pipenv & create dependencies
         run: |
-          pip install --prefer-binary pipenv
+          pip install --prefer-binary -r requirements.txt
           pipenv install
           pipenv requirements > requirements.txt
       - name: Create deployment package
