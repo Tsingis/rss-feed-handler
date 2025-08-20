@@ -1,4 +1,3 @@
-/.vscode
 /package
 *__pycache__
 .env*
