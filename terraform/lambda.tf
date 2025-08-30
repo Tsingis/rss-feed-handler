@@ -67,7 +67,7 @@ resource "aws_iam_policy" "lambda_policy" {
           "s3:ListBucket"
         ]
         Resource = [
-          "${aws_s3_bucket.rss_feeds_bucket.arn}",
+          aws_s3_bucket.rss_feeds_bucket.arn,
         ]
       },
       {
