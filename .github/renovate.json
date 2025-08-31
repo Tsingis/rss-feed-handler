@@ -1,0 +1,8 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Europe/Helsinki",
+  "schedule": ["* 21-22 * * 3"],
+  "rebaseWhen": "conflicted",
+  "enabledManagers": ["tflint-plugin"]
+}
