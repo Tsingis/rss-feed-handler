@@ -2,7 +2,7 @@ name: terraform
 on:
   pull_request:
     branches:
-      - master
+      - main
     paths:
       - "handler.py"
       - "create_package.py"
@@ -12,7 +12,7 @@ on:
       - ".github/workflows/terraform.yml"
   push:
     branches:
-      - master
+      - main
     paths:
       - "handler.py"
       - "create_package.py"
