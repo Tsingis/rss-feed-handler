@@ -7,7 +7,6 @@ updates:
       day: "wednesday"
       time: "21:00"
       timezone: "Europe/Helsinki"
-    target-branch: "master"
   - package-ecosystem: "pip"
     directory: "/"
     versioning-strategy: "increase"
@@ -16,7 +15,6 @@ updates:
       day: "wednesday"
       time: "21:00"
       timezone: "Europe/Helsinki"
-    target-branch: "master"
   - package-ecosystem: "terraform"
     directory: "/terraform"
     schedule:
@@ -24,4 +22,3 @@ updates:
       day: "wednesday"
       time: "21:00"
       timezone: "Europe/Helsinki"
-    target-branch: "master"
