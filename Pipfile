@@ -10,7 +10,7 @@ venv_in_project = true
 python_version = "3.13"
 
 [packages]
-feedparser = "==6.0.11"
+feedparser = "==6.0.12"
 
 [dev-packages]
 black = "==25.1.0"
