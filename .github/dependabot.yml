@@ -15,6 +15,8 @@ updates:
       day: "wednesday"
       time: "21:00"
       timezone: "Europe/Helsinki"
+    cooldown:
+      default-days: 1
   - package-ecosystem: "terraform"
     directory: "/terraform"
     schedule:
