@@ -2,7 +2,7 @@ resource "aws_lambda_function" "rss_handler" {
   function_name = "rss-feeds-handler"
   role          = aws_iam_role.lambda_role.arn
   handler       = "handler.handler"
-  runtime       = "python3.13"
+  runtime       = "python3.14"
   architectures = ["x86_64"]
   memory_size   = 256
   timeout       = 30
