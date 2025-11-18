@@ -7,7 +7,7 @@ name = "pypi"
 venv_in_project = true
 
 [requires]
-python_version = "3.13"
+python_version = "3.14"
 
 [packages]
 feedparser = "==6.0.12"
