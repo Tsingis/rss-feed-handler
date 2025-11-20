@@ -31,7 +31,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v6
         with:
@@ -62,7 +62,7 @@ jobs:
       TF_VAR_lambda_package_path: ${{ github.workspace}}/${{ vars.LAMBDA_PACKAGE }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
           python-version: "3.14"
