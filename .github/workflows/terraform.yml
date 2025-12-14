@@ -4,19 +4,12 @@ on:
     branches:
       - main
     paths:
-      - "handler.py"
-      - "create_package.py"
-      - "Pipfile*"
-      - "requirements.txt"
       - "terraform/**"
       - ".github/workflows/terraform.yml"
   push:
     branches:
       - main
     paths:
-      - "handler.py"
-      - "create_package.py"
-      - "Pipfile*"
       - "terraform/**"
       - ".github/workflows/terraform.yml"
   schedule:
@@ -26,35 +19,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  package:
-    if: ${{ github.event_name != 'schedule' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-      - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
-        with:
-          python-version: "3.14"
-          architecture: "x64"
-          cache: "pipenv"
-          cache-dependency-path: Pipfile.lock
-      - name: Install pipenv & create dependencies
-        run: |
-          pip install --prefer-binary -r requirements.txt
-          pipenv install
-          pipenv requirements > requirements.txt
-      - name: Create deployment package
-        run: python create_package.py --output ${{ github.workspace }}/${{ vars.LAMBDA_PACKAGE }}
-      - name: Upload package
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: lambda-package
-          path: ${{ github.workspace}}/${{ vars.LAMBDA_PACKAGE }}
-          overwrite: true
-          retention-days: 1
-          if-no-files-found: error
-  terraform-lint:
+  lint:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -74,10 +39,10 @@ jobs:
         id: tflint
         run: tflint -f compact --minimum-failure-severity notice
         working-directory: ./terraform
-  terraform:
+  deploy:
     if: ${{ github.event_name != 'schedule' }}
     runs-on: ubuntu-latest
-    needs: [terraform-lint, package]
+    needs: [lint]
     permissions:
       id-token: write
       contents: read
@@ -87,6 +52,7 @@ jobs:
       TF_VAR_topic_name: ${{ secrets.RSS_FEEDS_TOPIC }}
       TF_VAR_alarm_topic_name: ${{ secrets.RSS_FEEDS_ALARM_TOPIC }}
       TF_VAR_rss_feeds_urls: ${{ vars.RSS_FEEDS_URLS }}
+      TF_VAR_lambda_name: ${{ vars.LAMBDA_NAME }}
       TF_VAR_lambda_package_path: ${{ github.workspace}}/${{ vars.LAMBDA_PACKAGE }}
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
@@ -95,10 +61,8 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_ROLE }}
-      - name: Download package
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
-        with:
-          path: ${{ github.workspace }}
+      - name: Create dummy package
+        run: zip -j ${{ vars.LAMBDA_PACKAGE }} handler.py
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
       - name: Terraform format

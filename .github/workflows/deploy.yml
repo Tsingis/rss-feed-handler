@@ -1,0 +1,79 @@
+name: deploy
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "handler.py"
+      - "Pipfile*"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "handler.py"
+      - "Pipfile*"
+      - "requirements.txt"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  package:
+    if: ${{ github.event_name != 'schedule' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+        with:
+          python-version: "3.14"
+          architecture: "x64"
+          cache: "pipenv"
+          cache-dependency-path: Pipfile.lock
+      - name: Install pipenv
+        run: |
+          pip install --prefer-binary -r requirements.txt
+          pipenv install
+      - name: Create deployment package
+        run: |
+          pipenv requirements > requirements.txt
+          pip install --prefer-binary -r requirements.txt --target ${{ github.workspace }}/package
+          cp handler.py ${{ github.workspace }}/package
+      - name: Upload package
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: lambda-package
+          path: ${{ github.workspace}}/package
+          overwrite: true
+          retention-days: 1
+          if-no-files-found: error
+  deploy:
+    runs-on: ubuntu-latest
+    environment: AWS
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: package
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Download package
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          path: ${{ github.workspace }}/package
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5.1.1
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+      - name: Deploy
+        uses: aws-actions/aws-lambda-deploy@29ea35c124579506cf0475e20df36198eb670d89 # v1.1.0
+        with:
+          function-name: ${{ vars.LAMBDA_NAME }}
+          package-type: Zip
+          runtime: python3.14
+          handler: handler.handler
+          publish: false
+          code-artifacts-dir: ${{ github.workspace }}/package
