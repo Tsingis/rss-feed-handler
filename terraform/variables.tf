@@ -24,6 +24,11 @@ variable "rss_feeds_urls" {
   type        = string
 }
 
+variable "lambda_name" {
+  description = "Path to the Lambda deployment package"
+  type        = string
+}
+
 variable "lambda_package_path" {
   description = "Path to the Lambda deployment package"
   type        = string
