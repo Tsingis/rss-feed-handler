@@ -1,5 +1,5 @@
 resource "aws_lambda_function" "rss_handler" {
-  function_name = "rss-feeds-handler"
+  function_name = var.lambda_name
   role          = aws_iam_role.lambda_role.arn
   handler       = "handler.handler"
   runtime       = "python3.14"
@@ -19,10 +19,14 @@ resource "aws_lambda_function" "rss_handler" {
 
   filename         = var.lambda_package_path
   source_code_hash = filebase64sha256(var.lambda_package_path)
+
+  lifecycle {
+    ignore_changes = [filename, source_code_hash]
+  }
 }
 
 resource "aws_cloudwatch_log_group" "rss_handler_logs" {
-  name              = "/aws/lambda/rss-feeds-handler"
+  name              = "/aws/lambda/${var.lambda_name}"
   retention_in_days = 90
 }
 
@@ -89,7 +93,7 @@ resource "aws_iam_policy" "lambda_policy" {
           "logs:PutLogEvents"
         ]
         Resource = [
-          "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/rss-feeds-handler:*"
+          "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${var.lambda_name}:*"
         ]
       }
     ]
