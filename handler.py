@@ -6,13 +6,11 @@ import logging
 from typing import List
 from urllib.parse import urlparse
 
-
 LOCAL = os.getenv("AWS_LAMBDA_FUNCTION_NAME") is None
 RSS_FEEDS_URLS = os.getenv("RSS_FEEDS_URLS")
 BUCKET = os.getenv("RSS_FEEDS_BUCKET")
 TOPIC_ARN = os.getenv("RSS_FEEDS_TOPIC_ARN")
 ACCOUNT_ID = os.getenv("AWS_ACCOUNT_ID")
-
 NOTIFICATION_SUBJECT = "New RSS Feed Entries"
 
 s3 = boto3.client("s3")
