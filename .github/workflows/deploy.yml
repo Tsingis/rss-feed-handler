@@ -19,8 +19,27 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+        with:
+          python-version: "3.14"
+          architecture: "x64"
+          cache: "pipenv"
+          cache-dependency-path: Pipfile.lock
+      - name: Install pipenv
+        run: |
+          pip install --prefer-binary -r requirements.txt
+          pipenv install --dev
+      - name: Check linting & formatting
+        run: |
+          pipenv run flake8 .
+          pipenv run black --check .
   package:
-    if: ${{ github.event_name != 'schedule' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -54,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: AWS
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    needs: package
+    needs: [package, check]
     permissions:
       id-token: write
       contents: read
