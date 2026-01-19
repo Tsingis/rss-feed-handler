@@ -22,8 +22,10 @@
 
 1. Activate virtual environment if not active `pipenv shell`
 2. Run `pipenv requirements > deps.txt`
-3. Run `pipenv run create_package.py -r deps.txt`
-4. Set `terraform.tfvars` contents
-5. Run `terraform init -backend-config="bucket=<TF_STATE_BUCKET>"`
-6. Run `terraform plan -out=tfplan`
-7. Run `terraform apply tfplan`
+3. Run `pip install --target package  -r deps.txt`
+4. Run `copy handler.py package`
+5. Zip contents
+6. Set `terraform.tfvars` contents
+7. Run `terraform init -backend-config="bucket=<TF_STATE_BUCKET>"`
+8. Run `terraform plan -out=tfplan`
+9. Run `terraform apply tfplan`
