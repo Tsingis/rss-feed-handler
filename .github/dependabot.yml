@@ -8,7 +8,9 @@ updates:
       time: "21:00"
       timezone: "Europe/Helsinki"
   - package-ecosystem: "pip"
-    directory: "/"
+    directories:
+      - "/"
+      - "/terraform"
     versioning-strategy: "increase"
     schedule:
       interval: "monthly"
