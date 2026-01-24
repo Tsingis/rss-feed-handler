@@ -84,7 +84,7 @@ resource "aws_iam_policy" "lambda_policy" {
         Action = [
           "logs:CreateLogGroup",
         ]
-        Resource = "*"
+        Resource = "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:*"
       },
       {
         Effect = "Allow"
