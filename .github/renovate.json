@@ -4,5 +4,17 @@
   "timezone": "Europe/Helsinki",
   "schedule": ["* 21-22 * * 3"],
   "rebaseWhen": "conflicted",
-  "enabledManagers": ["tflint-plugin"]
+  "enabledManagers": ["tflint-plugin", "pipenv"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["* 21-22 * * 4"],
+    "commitMessageAction": "Update pipenv lockfile"
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["pipenv"],
+      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest"],
+      "enabled": false
+    }
+  ]
 }
