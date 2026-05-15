@@ -88,7 +88,7 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_ROLE }}
       - name: Deploy
-        uses: aws-actions/aws-lambda-deploy@20039225425cbacb648cf1ffe08cc221f19b65a0 # v1.1.1
+        uses: aws-actions/aws-lambda-deploy@d496277188b89f0be02d7a2216fc912c0427702a # v1.1.2
         with:
           function-name: ${{ vars.LAMBDA_NAME }}
           package-type: Zip
