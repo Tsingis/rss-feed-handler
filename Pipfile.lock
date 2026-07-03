@@ -85,11 +85,11 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:4292bb2cc645e5cb404515c54b5b164563f2b4218c52aeee3f1ce851724e177a",
-                "sha256:74b3d5626ebeb2677fac1ca12ac975faf328e54349ceb4dcda17f50674d5b9b4"
+                "sha256:0bc9d352267c9e48415c5d7bb61ff05c3f193eac2fc7e69cfd229a05fbab67d6",
+                "sha256:2085a4314cfd2c8bc1d08ab8039f76c92e99278db0d2a0e2437010526d5d5d70"
             ],
             "markers": "python_version >= '3.10'",
-            "version": "==1.43.33"
+            "version": "==1.43.40"
         },
         "cachecontrol": {
             "extras": [
@@ -247,11 +247,11 @@
         },
         "click": {
             "hashes": [
-                "sha256:482be17c6991b8c19c5429a1e995d9b0efdbb63172824c41f99965dc0ade8ec2",
-                "sha256:918b5633eddf6b41c32d4f454bf0de810065c74e3f7dbf8ee5452f8be88d3e96"
+                "sha256:9a6cea6e60b17ebe0a44c5cc636d94f09bd66142c1cd7d8b4cd731c4917a15f6",
+                "sha256:e6f9f66136c816745b9d65817da91d61d957fb16e02e4dcd0552553c5a197b76"
             ],
             "markers": "python_version >= '3.10'",
-            "version": "==8.4.1"
+            "version": "==8.4.2"
         },
         "cyclonedx-python-lib": {
             "hashes": [
@@ -271,11 +271,11 @@
         },
         "filelock": {
             "hashes": [
-                "sha256:10cdb3656fc44541cdf30652a93fb10ec6b05325620eb316bd26893e4201538a",
-                "sha256:dac1648087d5115554850d113e7dd8c83ab2d38e3435dde2d4f163847e57b767"
+                "sha256:6e6034c57a00a020e767f2614a5539863f056de7e7991d6d1473aef7ff73f156",
+                "sha256:8af830889ba3a0ffcefbd6c7d2af8a54012058103771f2e10848222f476a1693"
             ],
             "markers": "python_version >= '3.10'",
-            "version": "==3.29.4"
+            "version": "==3.29.5"
         },
         "flake8": {
             "hashes": [
