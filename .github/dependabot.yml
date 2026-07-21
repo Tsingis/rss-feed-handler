@@ -7,6 +7,10 @@ updates:
       day: "wednesday"
       time: "21:00"
       timezone: "Europe/Helsinki"
+    groups:
+      codeql:
+        patterns:
+          - "github/codeql-action/*"
   - package-ecosystem: "pip"
     directories:
       - "/"
