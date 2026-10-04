@@ -12,9 +12,9 @@ updates:
         patterns:
           - "github/codeql-action/*"
   - package-ecosystem: "pip"
-    directories:
-      - "/"
-      - "/terraform"
+    directory: "/"
+    exclude-paths:
+      - "terraform/**"
     versioning-strategy: "increase"
     schedule:
       interval: "monthly"
@@ -25,6 +25,15 @@ updates:
       default-days: 1
       exclude:
         - "pipenv"
+    
+  - package-ecosystem: "pip"
+    directory: "/terraform"
+    versioning-strategy: "increase"
+    schedule:
+      interval: "monthly"
+      day: "wednesday"
+      time: "21:00"
+      timezone: "Europe/Helsinki"
   - package-ecosystem: "terraform"
     directory: "/terraform"
     schedule:
